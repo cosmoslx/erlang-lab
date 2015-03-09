@@ -1,4 +1,5 @@
 -module(tr_server).
+-include_lib("eunit/include/eunit.hrl").
 -behaviour(gen_server).
 
 %%% ===
@@ -26,6 +27,13 @@
 -define(DEFAULT_PORT, 1055).
 
 -record(state, {port, lsock, request_count=0}).
+
+%%% ====
+%%% Test
+%%% ====
+
+start_test() ->
+    {ok , _} = tr_server:start_link(9055).
 
 
 %%% ==============
