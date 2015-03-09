@@ -2,9 +2,9 @@
 -include_lib("eunit/include/eunit.hrl").
 -behaviour(gen_server).
 
-%%% ===
-%%% API
-%%% ===
+%%% ====
+%%% APIs
+%%% ====
 
 -export([
          start_link/1,
