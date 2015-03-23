@@ -30,7 +30,7 @@ start_link(Value, LeaseTime) ->
     gen_server:start_link(?MODULE, [Value, LeaseTime], []).
 
 create(Value, LeaseTime) ->
-    sc_sup:start_child(Value, LeaseTime).
+    sc_element_sup:start_child(Value, LeaseTime).
 
 create(Value) ->
     create(Value, ?DEFAULT_LEASE_TIME).
@@ -75,11 +75,10 @@ handle_call(fetch, _From, State) ->
     {reply, {ok, Value}, State, TimeLeft}.
 
 handle_cast({replace, Value}, State) ->
-    #state{value = Value,
-           lease_time = LeaseTime,
+    #state{lease_time = LeaseTime,
            start_time = StartTime} = State,
     TimeLeft = time_left(StartTime, LeaseTime),
-    {reply, {ok, Value}, State#state{value = Value}, TimeLeft};
+    {noreply, State#state{value = Value}, TimeLeft};
 handle_cast(delete, State) ->
     {stop, normal, State}.
 

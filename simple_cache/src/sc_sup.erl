@@ -2,33 +2,22 @@
 
 -behaviour(supervisor).
 
-%% API
--export([start_link/0,
-         start_child/2]).
+%% api
+-export([start_link/0]).
 
-%% Supervisor callbacks
+%% callback
 -export([init/1]).
 
 -define(SERVER, ?MODULE).
 
-%% Helper macro for declaring children of supervisor
--define(CHILD(I, Type), {I, {I, start_link, []}, temporary, brutal_kill, Type, [I]}).
-
-%% ===================================================================
-%% API functions
-%% ===================================================================
-
 start_link() ->
     supervisor:start_link({local, ?SERVER}, ?MODULE, []).
 
-start_child(Value, LeaseTime) ->
-    supervisor:start_child(?SERVER, [Value, LeaseTime]).
-
-%% ===================================================================
-%% Supervisor callbacks
-%% ===================================================================
-
 init([]) ->
-    Children = [?CHILD(sc_element, worker)],
-    RestartStrategy = {simple_one_for_one, 0, 1},
+    ElementSup = {sc_element_sup, {sc_element_sup, start_link, []},
+                  permanent, 2000, supervisor, [sc_element]},
+    EventManager = {sc_event, {sc_event, start_link, []}, 
+                   permanent, 2000, worker, [sc_event]},
+    Children = [ElementSup, EventManager],
+    RestartStrategy = {one_for_one, 4, 3600},
     {ok, {RestartStrategy, Children}}.
