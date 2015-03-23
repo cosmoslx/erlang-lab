@@ -1,0 +1,11 @@
+erl
+
+% use basic error_logger
+
+1> c(die_please).
+2> die_please:start_link().
+
+% use sasl
+
+3> application:start(sasl).
+4> die_please:start_link().
